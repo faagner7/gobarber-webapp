@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-interface ToastProps {
+interface ContainerProps {
   type?: 'info' | 'success' | 'error';
   hasDescription?: boolean;
 }
@@ -20,15 +20,7 @@ const toastTypeVariantions = {
   `,
 };
 
-export const Container = styled.div`
-  position: absolute;
-  right: 0;
-  top: 0;
-  padding: 30px;
-  overflow: hidden;
-`;
-
-export const Toast = styled.div<ToastProps>`
+export const Container = styled.div<ContainerProps>`
   width: 360px;
 
   position: relative;
@@ -62,7 +54,7 @@ export const Toast = styled.div<ToastProps>`
   button {
     position: absolute;
     right: 16px;
-    top: 19px;
+    top: 14px;
     background: transparent;
     border: 0;
     color: inherit;
