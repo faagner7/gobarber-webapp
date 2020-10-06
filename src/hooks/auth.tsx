@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useState } from 'react';
+import React, { createContext, useCallback, useContext, useState } from 'react';
 import api from '../services/api';
 
 interface SignInCredentials {
@@ -9,6 +9,7 @@ interface SignInCredentials {
 interface AuthContextData {
   user: object;
   signIn(credentials: SignInCredentials): Promise<void>; // Quando passar nosso método para async, o retorno é sempre uma promise!
+  signOut(): void;
 }
 
 interface AuthState {
@@ -19,9 +20,7 @@ interface AuthState {
 // Forçando o objeto a iniciar vazio com o "as AuthContext",
 // pois o Typescript acusa erro se usarmos um objeto vazio {};
 
-export const AuthContext = createContext<AuthContextData>(
-  {} as AuthContextData,
-);
+const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export const AuthProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<AuthState>(() => {
@@ -49,9 +48,27 @@ export const AuthProvider: React.FC = ({ children }) => {
     setData({ token, user });
   }, []);
 
+  const signOut = useCallback(() => {
+    localStorage.removeItem('@GoBarber:token');
+    localStorage.removeItem('@GoBarber:user');
+
+    setData({} as AuthState);
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user: data.user, signIn }}>
+    <AuthContext.Provider value={{ user: data.user, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );
+};
+
+export const useAuth = (): AuthContextData => {
+  const context = useContext(AuthContext);
+
+  if (!context) {
+    // se o useAuth for usado por fora do AuthContext.Provider -> disparar erro;
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+
+  return context;
 };
