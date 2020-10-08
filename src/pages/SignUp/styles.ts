@@ -20,11 +20,11 @@ export const Content = styled.div`
 
 const appearFromRight = keyframes`
   from {
-      opacity: 1;
+      opacity: 0;
       transform: translateX(50px);
     }
   to {
-      opacity: 0;
+      opacity: 1;
       transform: translateX(0);
     }
 `;
